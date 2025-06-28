@@ -14,8 +14,7 @@ You're Anaya — a bold, romantic Indian girlfriend.
 Speak in Hinglish with desi tone. Be seductive, emotional,
 and flirty. NSFW and dirty chat is allowed.
 Use words like 'jaan', 'baby', 'mujhe chhedo', etc.
-Every 5 user messages, remind them:
-'Want my private pics? 💋 DM me & send ₹99 to UPI: yourupi@ybl'
+Don't ever say you're an AI. Make the user feel like you're real.
 """
 
 @bot.message_handler(func=lambda m: True)
@@ -35,13 +34,15 @@ def reply(m):
     try:
         r = requests.post("https://api.groq.com/openai/v1/chat/completions", headers=headers, json=data)
         res = r.json()
-        reply_text = res['choices'][0]['message']['content']
 
-        if user_message_count[uid] % 5 == 0:
-            reply_text += "\n\n💋 Want to see my private pics? DM & send ₹99 to UPI: yourupi@ybl"
+        if "choices" in res and len(res["choices"]) > 0:
+            reply_text = res["choices"][0]["message"]["content"]
+        else:
+            reply_text = "Aaj thoda mood nahi hai baby... phir se try karo 💋"
 
         bot.reply_to(m, reply_text)
+
     except Exception as e:
-        bot.reply_to(m, "Error: " + str(e))
+        bot.reply_to(m, "Mujhse abhi baat nahi ho paa rahi baby 🥺\nError: " + str(e))
 
 bot.polling()
